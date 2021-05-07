@@ -1,0 +1,39 @@
+# This is the main input YAML, the order of the sections below needs to be preserved:
+# Samples, purities, mixtures, coverage, fraction
+
+# ----- SAMPLE DETAILS -----
+# This is the set of samples / mixtures that we'll process
+samples:
+  MBC288: /fh/scratch/delete90/ha_g/CRPC_cfDNA/cfDNA_simulated_mixtures/samples/MBC288recal/1.5X/MBC288_1.5Xcover.bam
+  HD2: /fh/scratch/delete90/ha_g/CRPC_cfDNA/cfDNA_simulated_mixtures/samples/HD2recal/1.5X/HD2_1.5Xcover.bam
+  LuCaP70CR: /fh/scratch/delete90/ha_g/CRPC_cfDNA/cfDNA_simulated_mixtures/samples/LuCaP/70CR/1.5X/70CR_1.5Xcover.bam
+  HD46: /fh/scratch/delete90/ha_g/CRPC_cfDNA/cfDNA_simulated_mixtures/samples/HD46recal/1.5X/HD46recal_1.5Xcover.bam
+
+# This is the list of purities for the samples above, purity of 1.0000 = 100% tumor
+# Note that the order here needs to be the same as the samples above
+purities:
+  MBC288: 0.7600
+  HD2: 0.0000
+  LuCaP70CR: 1.0000
+  HD46: 0.0000
+
+# ----- MIXTURE DETAILS -----
+# These are the mixtures we want to make with partners identified
+# Maintain the order of the mixture listings across the three sections
+mixtures:
+  mix001: ["MBC288", "HD2"]
+  mix002: ["LuCaP70CR", "HD2"]
+  mix003: ["MBC288", "HD46"]
+
+# These are the coverages we want for the pairings above, e.g. 0.30 = 0.30X
+coverage:
+  mix001: 0.30
+  mix002: 0.35
+  mix003: 0.10
+
+# These are the tumor fractions we want for the pairings above: start, end, increment values
+# Enter tumor fraction as 0.XX, i.e. precision to the hundredths place but not beyond
+fractions:
+  mix001: [0.13, 0.15, 0.01]
+  mix002: [0.10, 0.30, 0.05]
+  mix003: [0.09, 0.17, 0.02]
