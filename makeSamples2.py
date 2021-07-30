@@ -16,8 +16,8 @@ import getopt
 infile = ''
 outfile = ''
 
-print '\n'
-print 'OUTPUT PRINTING FOR makeSamples2.py, LOOK IN logs/samples2yaml.txt FOR OUTPUT'
+print('\n')
+print('OUTPUT PRINTING FOR makeSamples2.py, LOOK IN logs/samples2yaml.txt FOR OUTPUT')
 
 # Define the main() function that will handle the arguments passed in
 def main(argv):
@@ -30,13 +30,13 @@ def main(argv):
   try:
     opts, args = getopt.getopt(argv,"hi:o:",["infile=", "outfile="])
   except getopt.GetoptError:
-    print 'makeSamples2.py -i <infile> -o <outfile>'
+    print('makeSamples2.py -i <infile> -o <outfile>')
     sys.exit(2)
 
   # Handle argument options
   for opt, arg in opts:
     if opt == '-h':
-      print 'makeSamples2.py -i <infile> -o <outfile>'
+      print('makeSamples2.py -i <infile> -o <outfile>')
       sys.exit(2)
     elif opt in ("-i", "--infile"):
       infile = arg
@@ -44,8 +44,8 @@ def main(argv):
       outfile = arg
 
   # Print the input arguments to the screen for confirmation
-  print 'Input file is...  ', infile
-  print 'Output file is... ', outfile 
+  print('Input file is...  ', infile)
+  print('Output file is... ', outfile) 
 
 # Include this to activate the main() function and assign values to variables
 if __name__ == "__main__":
@@ -60,14 +60,14 @@ File = open(infile, 'r')
 Lines = File.readlines()
 
 # Start reading out various important values from samples1.yaml file
-print '-----------------------'
-print 'Important values for the process...'
+print('-----------------------')
+print('Important values for the process...')
 
 # First, figure out which line numbers have the titles we need
 # The data we want will be in between them
 # ASSUMPTION: The order of these YAML sections needs to be maintained
 # ASSUMPTION: The list order within each YAML section needs to be maintained
-print 'Find section headings in samples1.yaml:'
+print('Find section headings in samples1.yaml:')
 puritiesLine = 0
 mixturesLine = 0
 coverageLine = 0
@@ -78,22 +78,22 @@ for line in Lines:
   count += 1
   dataval = line[0:9]
   if dataval == 'purities:':
-    print 'Purities on line ', count
+    print('Purities on line ', count)
     puritiesLine = count
   if dataval == 'mixtures:':
-    print 'Mixtures on line ', count
+    print('Mixtures on line ', count)
     mixturesLine = count
   if dataval == 'coverage:':
-    print 'Coverages on line ', count
+    print('Coverages on line ', count)
     coverageLine = count
   dataval = line[0:10]
   if dataval == 'fractions:':
-    print 'Fractions on line ', count
+    print('Fractions on line ', count)
     fractionLine = count
 
 # Record the number of lines in the YAML file
 linecount = count
-print 'Lines in samples1.yaml: ', linecount
+print('Lines in samples1.yaml: ', linecount)
 
 # Now that we know where the purity data is, let's extract sample ID and purity
 i = 0
@@ -107,7 +107,7 @@ for i in range(puritiesLine, mixturesLine-1):
     sampleIDArray.append(tempArray[0].strip())
     purityArray.append(tempArray[1].strip())
 numSamples = int( len(sampleIDArray) )
-print 'Number of samples: ', numSamples
+print('Number of samples: ', numSamples)
 
 # Now that we know where the coverage data is, let's get mixture ID and coverages
 mixIDArray = []
@@ -118,7 +118,7 @@ for i in range(coverageLine, fractionLine - 1):
     mixIDArray.append(tempArray[0].strip())
     coverArray.append(tempArray[1].strip())
 numMixtures = int( len(mixIDArray) )
-print 'Number of mixtures: ', numMixtures
+print('Number of mixtures: ', numMixtures)
 
 # We need to get the TF fraction data as well: a TF array for each mixture
 startTF = []
@@ -177,7 +177,7 @@ def getReads(filestring):
 sampleReads = []
 for i in range(0, numSamples):
   sampleReads.append( int(getReads(metricFileArray[i])) )
-  print 'Sample # ' + str(i+1) + ', reads = ', sampleReads[i]
+  print('Sample  ' + str(i+1) + ', reads = ', sampleReads[i])
 
 # Now we have everything we need for calculating downsampling probabilities
 
@@ -205,9 +205,9 @@ for i in range(0, numMixtures):
   thisTumorID = tumorIDArray[i]
   thisNormalID = normalIDArray[i]
   thisMixID = mixIDArray[i]
-  print '-----------------------'
-  print 'Mixture # ' + str(i+1) + ': mixID = ' + thisMixID + ', tumor = ' + thisTumorID + ', normal = ' + thisNormalID  
-  print 'Coverage = ' + str(thisCover) + 'X'
+  print('-----------------------')
+  print('Mixture  ' + str(i+1) + ': mixID = ' + thisMixID + ', tumor = ' + thisTumorID + ', normal = ' + thisNormalID ) 
+  print('Coverage = ' + str(thisCover) + 'X')
 
   # We need to lookup the purity of the tumor partner and reads in that partner
   thisTumorReads = 0
@@ -216,27 +216,27 @@ for i in range(0, numMixtures):
     if sampleIDArray[t] == thisTumorID:
       thisPurity = float( purityArray[t] )
       thisTumorReads = int( sampleReads[t] )
-  print 'Tumor sample purity = ' + str(thisPurity)
-  print 'Tumor sample total reads = ' + str(thisTumorReads)
+  print( 'Tumor sample purity = ' + str(thisPurity))
+  print( 'Tumor sample total reads = ' + str(thisTumorReads))
 
   # We need to lookup the reads in the normal partner
   thisNormalReads = 0
   for n in range(0,numSamples):
     if sampleIDArray[n] == thisNormalID:
       thisNormalReads = int( sampleReads[n] )
-  print 'Normal sample total reads = ' + str(thisNormalReads)
+  print( 'Normal sample total reads = ' + str(thisNormalReads))
 
   # Convert the TF data to integer to be used in range()
   # ASSUMPTION: Notice that TF values must have a max precision of hundredths to work here
   thisStartTF = int( 100 * float( startTF[i] ) )
   thisEndTF = int( 100 * float( endTF[i] ) )
   thisIncTF = int( 100 * float( incTF[i] ) )
-  print 'Tumor fraction range: from ' + startTF[i] + ' to ' + endTF[i] + ' with ' + incTF[i] + ' increments'
+  print('Tumor fraction range: from ' + startTF[i] + ' to ' + endTF[i] + ' with ' + incTF[i] + ' increments')
 
   # Calculate tumor and normal reads for the tumor sample
   tReadsTumor = int( round( thisPurity * thisTumorReads ) )
   tReadsNormal = thisTumorReads - tReadsTumor
-  print 'Tumor sample has ' + str(tReadsTumor) + ' tumor reads and ' + str(tReadsNormal) + ' normal reads'
+  print('Tumor sample has ' + str(tReadsTumor) + ' tumor reads and ' + str(tReadsNormal) + ' normal reads')
 
   # Start iterating over the TF values
   for j in range(thisStartTF, thisEndTF+1, thisIncTF):
@@ -251,23 +251,23 @@ for i in range(0, numMixtures):
     digits = len( str(thisTF) )
     if digits == 3:
       thisTFLabel = str(thisTF) + '0'    
-    print '   TF = ' + thisTFLabel
+    print('   TF = ' + thisTFLabel)
 
     # Now we need to find the downsample probabilities, if they exist, for our pair
     # First, get the overall numbers we need to satisfy for the target
     targetReads = int( round( thisCover * int(3e7) ) )
     targetReadsTumor = int( round( thisTF * targetReads ) )
     targetReadsNormal = targetReads - targetReadsTumor
-    print '   Target reads: total = ' + str(targetReads) + ', tumor = ' + str(targetReadsTumor) + ', normal = ' + str(targetReadsNormal)
+    print('   Target reads: total = ' + str(targetReads) + ', tumor = ' + str(targetReadsTumor) + ', normal = ' + str(targetReadsNormal))
 
     # ASSUMPTION: Note that we are truncating probabilities to 0.XXXX, which might not be precise enough
     # Calculate tumor reads, check if we have enough for what we need
     tProb = 0
     if tReadsTumor < targetReadsTumor:
-      print '   Insufficient tumor reads in tumor sample. Prob = 0'
+      print('   Insufficient tumor reads in tumor sample. Prob = 0')
     else:
       tProb = round( float(targetReadsTumor) / float(tReadsTumor), 4)
-      print '   Tumor downsample probability = ' + str(tProb)
+      print('   Tumor downsample probability = ' + str(tProb))
 
     # Now we need to find how many reads we need from the normal sample, if any
     # This is like the total we need minus normal reads in the downsampled tumor file
@@ -277,49 +277,53 @@ for i in range(0, numMixtures):
     nProb = 0
     if needNormal > 0:
       if thisNormalReads < needNormal:
-        print '   Insufficient reads in the normal sample. Prob = 0'
+        print('   Insufficient reads in the normal sample. Prob = 0')
       else:
         nProb = round( float(needNormal) / float(thisNormalReads), 4)
-        print '   Normal downsample probability = ' + str(nProb)
+        print('   Normal downsample probability = ' + str(nProb))
     else:
-      print '   Not possible, too many normal reads in tumor sample...'
+      print('   Not possible, too many normal reads in tumor sample...')
 
     #----------------------------------
     #--- CREATE TEXT LINES FOR YAML ---
     #----------------------------------
 
-    # Now that we have everything, we can assemble a couple arrays
-    # First we need to make sure the probabilities have the right number of digits, i.e. 0.XXXX
-    digits = len( str(tProb) )
-    tProbLabel = str(tProb) 
-    if digits == 3: tProbLabel = str(tProb) + '000'
-    elif digits == 4: tProbLabel = str(tProb) + '00'
-    elif digits == 5: tProbLabel = str(tProb) + '0'
+    # Test if this is a viable mixture: tProb and nProb must both be non-zero
+    # Otherwise, don't write any lines
+    if tProb > 0 and nProb > 0:
 
-    digits = len( str(nProb) )
-    nProbLabel = str(nProb) 
-    if digits == 3: nProbLabel = str(nProb) + '000'
-    elif digits == 4: nProbLabel = str(nProb) + '00'
-    elif digits == 5: nProbLabel = str(nProb) + '0'
+      # Now that we have everything, we can assemble a couple arrays
+      # First we need to make sure the probabilities have the right number of digits, i.e. 0.XXXX
+      digits = len( str(tProb) )
+      tProbLabel = str(tProb) 
+      if digits == 3: tProbLabel = str(tProb) + '000'
+      elif digits == 4: tProbLabel = str(tProb) + '00'
+      elif digits == 5: tProbLabel = str(tProb) + '0'
 
-    # Now we can assemble a line of test for the samples
-    # The pattern is   sampleID_p0.XXXX: [0.XXXX, results/sources/ID-chrsOnly.dups_removed.bam]
-    newTumorLabel = thisTumorID + '_p' + tProbLabel
-    newNormalLabel = thisNormalID + '_p' + nProbLabel
-    addTumorString = '  ' + newTumorLabel + ': [' + tProbLabel + ', results/sources/' + thisTumorID  + '-chrsOnly.dups_removed.bam]'
-    addNormalString = '  ' + newNormalLabel + ': [' + nProbLabel + ', results/sources/' + thisNormalID  + '-chrsOnly.dups_removed.bam]'
+      digits = len( str(nProb) )
+      nProbLabel = str(nProb) 
+      if digits == 3: nProbLabel = str(nProb) + '000'
+      elif digits == 4: nProbLabel = str(nProb) + '00'
+      elif digits == 5: nProbLabel = str(nProb) + '0'
 
-    # Now add these lines to our running list, first tumor then normal
-    newSampleList.append(addTumorString)
-    newSampleList.append(addNormalString)   
+      # Now we can assemble a line of test for the samples
+      # The pattern is   sampleID_p0.XXXX: [0.XXXX, results/sources/ID-chrsOnly.dups_removed.bam]
+      newTumorLabel = thisTumorID + '_p' + tProbLabel
+      newNormalLabel = thisNormalID + '_p' + nProbLabel
+      addTumorString = '  ' + newTumorLabel + ': [' + tProbLabel + ', results/sources/' + thisTumorID  + '-chrsOnly.dups_removed.bam]'
+      addNormalString = '  ' + newNormalLabel + ': [' + nProbLabel + ', results/sources/' + thisNormalID  + '-chrsOnly.dups_removed.bam]'
 
-    # Now we need to make the line for the new mixture format, tumor then normal
-    # The pattern is mixID_TF0.XX: ["newTumorLabel", "newNormalLabel"]
-    newMixLabel = '  ' + thisMixID + '_TF' + thisTFLabel + ': ["' + newTumorLabel + '", "' + newNormalLabel + '"]'
-    newMixtureList.append(newMixLabel)
+      # Now add these lines to our running list, first tumor then normal
+      newSampleList.append(addTumorString)
+      newSampleList.append(addNormalString)   
+
+      # Now we need to make the line for the new mixture format, tumor then normal
+      # The pattern is mixID_TF0.XX: ["newTumorLabel", "newNormalLabel"]
+      newMixLabel = '  ' + thisMixID + '_TF' + thisTFLabel + ': ["' + newTumorLabel + '", "' + newNormalLabel + '"]'
+      newMixtureList.append(newMixLabel)
 
 # Add a space to print out
-print '\n'
+print('\n')
 
 #-----------------------------
 #--- WRITE THE OUTPUT FILE ---
