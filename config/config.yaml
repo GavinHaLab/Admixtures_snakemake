@@ -2,7 +2,7 @@
 # In general we assume we are using the HG38 build of the human genome
 
 # Reference (human) genome for HG38
-ref_genome: /fh/fast/ha_g/grp/reference/GRCh38/GRCh38.fa
+ref_genome: /fh/fast/ha_g/grp/reference/GRCh38/Broad_bundle_hg38/v0/Homo_sapiens_assembly38.fasta
 
 # Location of Picard tools jar file
 picard:     /app/software/picard/2.18.29-Java/picard.jar
