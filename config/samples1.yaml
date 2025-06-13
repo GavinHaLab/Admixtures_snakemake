@@ -4,36 +4,133 @@
 # ----- SAMPLE DETAILS -----
 # This is the set of samples / mixtures that we'll process
 samples:
-  MBC288: /fh/scratch/delete90/ha_g/CRPC_cfDNA/cfDNA_simulated_mixtures/samples/MBC288recal/1.5X/MBC288_1.5Xcover.bam
-  HD2: /fh/scratch/delete90/ha_g/CRPC_cfDNA/cfDNA_simulated_mixtures/samples/HD2recal/1.5X/HD2_1.5Xcover.bam
-  LuCaP70CR: /fh/scratch/delete90/ha_g/CRPC_cfDNA/cfDNA_simulated_mixtures/samples/LuCaP/70CR/1.5X/70CR_1.5Xcover.bam
-  HD46: /fh/scratch/delete90/ha_g/CRPC_cfDNA/cfDNA_simulated_mixtures/samples/HD46recal/1.5X/HD46recal_1.5Xcover.bam
+  LuCaP_93: /fh/fast/ha_g/user/rpatton/LuCaP_data/bams/LuCaP_93.bam
+  LuCaP_145-1: /fh/fast/ha_g/user/rpatton/LuCaP_data/bams/LuCaP_145-1.bam
+  LuCaP_136: /fh/fast/ha_g/user/rpatton/LuCaP_data/bams/LuCaP_136.bam
+  LuCaP_96: /fh/fast/ha_g/user/rpatton/LuCaP_data/bams/LuCaP_96.bam
+  LuCaP_176: /fh/fast/ha_g/user/rpatton/LuCaP_data/bams/LuCaP_176.bam
+  FHSC47: /fh/fast/ha_g/user/rpatton/SCLC_data/bams/FHSC47.bam
+  FHSC36: /fh/fast/ha_g/user/rpatton/SCLC_data/bams/FHSC36.bam
+  MSK_LX465: /fh/fast/ha_g/user/rpatton/SCLC_data/bams/MSK_LX465.bam
+  SCLC152: /fh/fast/ha_g/user/rpatton/SCLC_data/bams/SCLC152.bam
+  H526: /fh/fast/ha_g/user/rpatton/SCLC_data/bams/H526.bam
+  KP63707: /fh/fast/ha_g/user/rpatton/HD_data/bams/KP63707.bam
+  NPH012_036: /fh/scratch/delete90/ha_g/realigned_bams_BROAD/ProteusAdmixtures/healthyMerge/nphHealthy/NPH012_036.sorted.bam
+  KP65198_65231: /fh/scratch/delete90/ha_g/realigned_bams_BROAD/ProteusAdmixtures/healthyMerge/kpHealthy/KP65198_65231.sorted.bam
 
 # This is the list of purities for the samples above, purity of 1.0000 = 100% tumor
 # Note that the order here needs to be the same as the samples above
 purities:
-  MBC288: 0.7600
-  HD2: 0.0000
-  LuCaP70CR: 1.0000
-  HD46: 0.0000
+  LuCaP_93: 1
+  LuCaP_145-1: 1
+  LuCaP_136: 1
+  LuCaP_96: 1
+  LuCaP_176: 1
+  FHSC47: 1
+  FHSC36: 1
+  MSK_LX465: 1
+  SCLC152: 1
+  H526: 1
+  KP63707: 0
+  NPH012_036: 0
+  KP65198_65231: 0
 
 # ----- MIXTURE DETAILS -----
 # These are the mixtures we want to make with partners identified
 # Maintain the order of the mixture listings across the three sections
 mixtures:
-  mix001: ["MBC288", "HD2"]
-  mix002: ["LuCaP70CR", "HD2"]
-  mix003: ["MBC288", "HD46"]
-
+  pdx_mix1: ["LuCaP_93","KP63707"]
+  pdx_mix2: ["LuCaP_145-1","KP63707"]
+  pdx_mix3: ["LuCaP_136","KP63707"]
+  pdx_mix4: ["LuCaP_96","KP63707"]
+  pdx_mix5: ["LuCaP_176","KP63707"]
+  pdx_mix6: ["FHSC47","KP63707"]
+  pdx_mix7: ["FHSC36","KP63707"]
+  pdx_mix8: ["MSK_LX465","KP63707"]
+  pdx_mix9: ["SCLC152","KP63707"]
+  pdx_mix10: ["H526","KP63707"]
+  pdx_mix11: ["LuCaP_93","KP65198_65231"]
+  pdx_mix12: ["LuCaP_145-1","KP65198_65231"]
+  pdx_mix13: ["LuCaP_136","KP65198_65231"]
+  pdx_mix14: ["LuCaP_96","KP65198_65231"]
+  pdx_mix15: ["LuCaP_176","KP65198_65231"]
+  pdx_mix16: ["FHSC47","KP65198_65231"]
+  pdx_mix17: ["FHSC36","KP65198_65231"]
+  pdx_mix18: ["MSK_LX465","KP65198_65231"]
+  pdx_mix19: ["SCLC152","KP65198_65231"]
+  pdx_mix20: ["H526","KP65198_65231"]
+  pdx_mix21: ["LuCaP_93","NPH012_036"]
+  pdx_mix22: ["LuCaP_145-1","NPH012_036"]
+  pdx_mix23: ["LuCaP_136","NPH012_036"]
+  pdx_mix24: ["LuCaP_96","NPH012_036"]
+  pdx_mix25: ["LuCaP_176","NPH012_036"]
+  pdx_mix26: ["FHSC47","NPH012_036"]
+  pdx_mix27: ["FHSC36","NPH012_036"]
+  pdx_mix28: ["MSK_LX465","NPH012_036"]
+  pdx_mix29: ["SCLC152","NPH012_036"]
+  pdx_mix30: ["H526","NPH012_036"]
 # These are the coverages we want for the pairings above, e.g. 0.30 = 0.30X
 coverage:
-  mix001: 0.30
-  mix002: 0.35
-  mix003: 0.10
-
+  pdx_mix1: 30
+  pdx_mix2: 30
+  pdx_mix3: 30
+  pdx_mix4: 30
+  pdx_mix5: 30
+  pdx_mix6: 30
+  pdx_mix7: 30
+  pdx_mix8: 30
+  pdx_mix9: 30
+  pdx_mix10: 30
+  pdx_mix11: 30
+  pdx_mix12: 30
+  pdx_mix13: 30
+  pdx_mix14: 30
+  pdx_mix15: 30
+  pdx_mix16: 30
+  pdx_mix17: 30
+  pdx_mix18: 30
+  pdx_mix19: 30
+  pdx_mix20: 30
+  pdx_mix21: 30
+  pdx_mix22: 30
+  pdx_mix23: 30
+  pdx_mix24: 30
+  pdx_mix25: 30
+  pdx_mix26: 30
+  pdx_mix27: 30
+  pdx_mix28: 30
+  pdx_mix29: 30
+  pdx_mix30: 30
 # These are the tumor fractions we want for the pairings above: start, end, increment values
 # Enter tumor fraction as 0.XX, i.e. precision to the hundredths place but not beyond
 fractions:
-  mix001: [0.13, 0.15, 0.01]
-  mix002: [0.10, 0.30, 0.05]
-  mix003: [0.09, 0.17, 0.02]
+  pdx_mix1: [1,3,5,10,20,35,50]
+  pdx_mix2: [1,3,5,10,20,35,50]
+  pdx_mix3: [1,3,5,10,20,35,50]
+  pdx_mix4: [1,3,5,10,20,35,50]
+  pdx_mix5: [1,3,5,10,20,35,50]
+  pdx_mix6: [1,3,5,10,20,35,50]
+  pdx_mix7: [1,3,5,10,20,35,50]
+  pdx_mix8: [1,3,5,10,20,35,50]
+  pdx_mix9: [1,3,5,10,20,35,50]
+  pdx_mix10: [1,3,5,10,20,35,50]
+  pdx_mix11: [1,3,5,10,20,35,50]
+  pdx_mix12: [1,3,5,10,20,35,50]
+  pdx_mix13: [1,3,5,10,20,35,50]
+  pdx_mix14: [1,3,5,10,20,35,50]
+  pdx_mix15: [1,3,5,10,20,35,50]
+  pdx_mix16: [1,3,5,10,20,35,50]
+  pdx_mix17: [1,3,5,10,20,35,50]
+  pdx_mix18: [1,3,5,10,20,35,50]
+  pdx_mix19: [1,3,5,10,20,35,50]
+  pdx_mix20: [1,3,5,10,20,35,50]
+  pdx_mix21: [1,3,5,10,20,35,50]
+  pdx_mix22: [1,3,5,10,20,35,50]
+  pdx_mix23: [1,3,5,10,20,35,50]
+  pdx_mix24: [1,3,5,10,20,35,50]
+  pdx_mix25: [1,3,5,10,20,35,50]
+  pdx_mix26: [1,3,5,10,20,35,50]
+  pdx_mix27: [1,3,5,10,20,35,50]
+  pdx_mix28: [1,3,5,10,20,35,50]
+  pdx_mix29: [1,3,5,10,20,35,50]
+  pdx_mix30: [1,3,5,10,20,35,50]

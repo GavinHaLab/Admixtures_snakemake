@@ -121,15 +121,21 @@ numMixtures = int( len(mixIDArray) )
 print('Number of mixtures: ', numMixtures)
 
 # We need to get the TF fraction data as well: a TF array for each mixture
-startTF = []
-endTF = []
-incTF = []
+# startTF = []
+# endTF = []
+# incTF = []
 for i in range(fractionLine, linecount):
   if substr in Lines[i] and Lines[i][0:1] != '#':
     tempArray = Lines[i].split(',')
-    startTF.append( tempArray[0].split('[')[1] )
-    endTF.append( tempArray[1].strip() )
-    incTF.append( (tempArray[2].split(']')[0]).strip() )
+    # need to change to allow for input list of TFs instead of range
+    tumorFractionList = tempArray
+    # need to ensure first element has [ stripped and last element has ] stripped
+    tumorFractionList[0] = tumorFractionList[0].split('[')[1]
+    tumorFractionList[-1] = tumorFractionList[-1].split(']')[0]
+
+    # startTF.append( tempArray[0].split('[')[1] )
+    # endTF.append( tempArray[1].strip() )
+    # incTF.append( (tempArray[2].split(']')[0]).strip() )
 
 # Finally, we need to get the mixing partners or pairs of sample IDs
 # ASSUMPTION: For each mixture listed, the sample order must be [tumor, normal]
@@ -177,7 +183,7 @@ def getReads(filestring):
 sampleReads = []
 for i in range(0, numSamples):
   sampleReads.append( int(getReads(metricFileArray[i])) )
-  print('Sample  ' + str(i+1) + ', reads = ', sampleReads[i])
+  #print 'Sample # ' + str(i+1) + ', reads = ', sampleReads[i]
 
 # Now we have everything we need for calculating downsampling probabilities
 
@@ -206,7 +212,7 @@ for i in range(0, numMixtures):
   thisNormalID = normalIDArray[i]
   thisMixID = mixIDArray[i]
   print('-----------------------')
-  print('Mixture  ' + str(i+1) + ': mixID = ' + thisMixID + ', tumor = ' + thisTumorID + ', normal = ' + thisNormalID ) 
+  print('Mixture ' + str(i+1) + ': mixID = ' + thisMixID + ', tumor = ' + thisTumorID + ', normal = ' + thisNormalID)  
   print('Coverage = ' + str(thisCover) + 'X')
 
   # We need to lookup the purity of the tumor partner and reads in that partner
@@ -216,22 +222,23 @@ for i in range(0, numMixtures):
     if sampleIDArray[t] == thisTumorID:
       thisPurity = float( purityArray[t] )
       thisTumorReads = int( sampleReads[t] )
-  print( 'Tumor sample purity = ' + str(thisPurity))
-  print( 'Tumor sample total reads = ' + str(thisTumorReads))
+  print('Tumor sample purity = ' + str(thisPurity))
+  print('Tumor sample total reads = ' + str(thisTumorReads))
 
   # We need to lookup the reads in the normal partner
   thisNormalReads = 0
   for n in range(0,numSamples):
     if sampleIDArray[n] == thisNormalID:
       thisNormalReads = int( sampleReads[n] )
-  print( 'Normal sample total reads = ' + str(thisNormalReads))
+  print('Normal sample total reads = ' + str(thisNormalReads))
 
   # Convert the TF data to integer to be used in range()
   # ASSUMPTION: Notice that TF values must have a max precision of hundredths to work here
-  thisStartTF = int( 100 * float( startTF[i] ) )
-  thisEndTF = int( 100 * float( endTF[i] ) )
-  thisIncTF = int( 100 * float( incTF[i] ) )
-  print('Tumor fraction range: from ' + startTF[i] + ' to ' + endTF[i] + ' with ' + incTF[i] + ' increments')
+  # thisStartTF = int( 100 * float( startTF[i] ) ) 
+  # thisEndTF = int( 100 * float( endTF[i] ) )
+  # thisIncTF = int( 100 * float( incTF[i] ) )
+  # tumorFractionList = [int( 100 * float(x) ) for x in tumorFractionList]
+  # print('Tumor fraction range: from ' + startTF[i] + ' to ' + endTF[i] + ' with ' + incTF[i] + ' increments') # here the values are converted to integers instead of hundreths
 
   # Calculate tumor and normal reads for the tumor sample
   tReadsTumor = int( round( thisPurity * thisTumorReads ) )
@@ -239,7 +246,8 @@ for i in range(0, numMixtures):
   print('Tumor sample has ' + str(tReadsTumor) + ' tumor reads and ' + str(tReadsNormal) + ' normal reads')
 
   # Start iterating over the TF values
-  for j in range(thisStartTF, thisEndTF+1, thisIncTF):
+  # for j in range(thisStartTF, thisEndTF+1, thisIncTF):
+  for j in tumorFractionList:
 
     #----------------------------------
     #--- CALCULATE DOWNSAMPLE PROBS ---
@@ -288,39 +296,35 @@ for i in range(0, numMixtures):
     #--- CREATE TEXT LINES FOR YAML ---
     #----------------------------------
 
-    # Test if this is a viable mixture: tProb and nProb must both be non-zero
-    # Otherwise, don't write any lines
-    if tProb > 0 and nProb > 0:
+    # Now that we have everything, we can assemble a couple arrays
+    # First we need to make sure the probabilities have the right number of digits, i.e. 0.XXXX
+    digits = len( str(tProb) )
+    tProbLabel = str(tProb) 
+    if digits == 3: tProbLabel = str(tProb) + '000'
+    elif digits == 4: tProbLabel = str(tProb) + '00'
+    elif digits == 5: tProbLabel = str(tProb) + '0'
 
-      # Now that we have everything, we can assemble a couple arrays
-      # First we need to make sure the probabilities have the right number of digits, i.e. 0.XXXX
-      digits = len( str(tProb) )
-      tProbLabel = str(tProb) 
-      if digits == 3: tProbLabel = str(tProb) + '000'
-      elif digits == 4: tProbLabel = str(tProb) + '00'
-      elif digits == 5: tProbLabel = str(tProb) + '0'
+    digits = len( str(nProb) )
+    nProbLabel = str(nProb) 
+    if digits == 3: nProbLabel = str(nProb) + '000'
+    elif digits == 4: nProbLabel = str(nProb) + '00'
+    elif digits == 5: nProbLabel = str(nProb) + '0'
 
-      digits = len( str(nProb) )
-      nProbLabel = str(nProb) 
-      if digits == 3: nProbLabel = str(nProb) + '000'
-      elif digits == 4: nProbLabel = str(nProb) + '00'
-      elif digits == 5: nProbLabel = str(nProb) + '0'
+    # Now we can assemble a line of test for the samples
+    # The pattern is   sampleID_p0.XXXX: [0.XXXX, results/sources/ID-chrsOnly.dups_removed.bam]
+    newTumorLabel = thisTumorID + '_p' + tProbLabel
+    newNormalLabel = thisNormalID + '_p' + nProbLabel
+    addTumorString = '  ' + newTumorLabel + ': [' + tProbLabel + ', results/sources/' + thisTumorID  + '-chrsOnly.dups_removed.bam]'
+    addNormalString = '  ' + newNormalLabel + ': [' + nProbLabel + ', results/sources/' + thisNormalID  + '-chrsOnly.dups_removed.bam]'
 
-      # Now we can assemble a line of test for the samples
-      # The pattern is   sampleID_p0.XXXX: [0.XXXX, results/sources/ID-chrsOnly.dups_removed.bam]
-      newTumorLabel = thisTumorID + '_p' + tProbLabel
-      newNormalLabel = thisNormalID + '_p' + nProbLabel
-      addTumorString = '  ' + newTumorLabel + ': [' + tProbLabel + ', results/sources/' + thisTumorID  + '-chrsOnly.dups_removed.bam]'
-      addNormalString = '  ' + newNormalLabel + ': [' + nProbLabel + ', results/sources/' + thisNormalID  + '-chrsOnly.dups_removed.bam]'
+    # Now add these lines to our running list, first tumor then normal
+    newSampleList.append(addTumorString)
+    newSampleList.append(addNormalString)   
 
-      # Now add these lines to our running list, first tumor then normal
-      newSampleList.append(addTumorString)
-      newSampleList.append(addNormalString)   
-
-      # Now we need to make the line for the new mixture format, tumor then normal
-      # The pattern is mixID_TF0.XX: ["newTumorLabel", "newNormalLabel"]
-      newMixLabel = '  ' + thisMixID + '_TF' + thisTFLabel + ': ["' + newTumorLabel + '", "' + newNormalLabel + '"]'
-      newMixtureList.append(newMixLabel)
+    # Now we need to make the line for the new mixture format, tumor then normal
+    # The pattern is mixID_TF0.XX: ["newTumorLabel", "newNormalLabel"]
+    newMixLabel = '  ' + thisMixID + '_TF' + thisTFLabel + ': ["' + newTumorLabel + '", "' + newNormalLabel + '"]'
+    newMixtureList.append(newMixLabel)
 
 # Add a space to print out
 print('\n')
